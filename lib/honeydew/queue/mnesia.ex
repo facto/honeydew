@@ -60,8 +60,11 @@ defmodule Honeydew.Queue.Mnesia do
     # assert that mnesia started correctly everywhere?
     :rpc.multicall(nodes, :mnesia, :start, [])
 
-    generic_table_def = [attributes: WrappedJob.record_fields(),
-                         record_name: WrappedJob.record_name()]
+    generic_table_def =
+      Keyword.merge(opts, [
+        attributes: WrappedJob.record_fields(),
+        record_name: WrappedJob.record_name()
+      ])
 
     # inspect/1 here becase queue_name can be of the form {:global, poolname}
     table = ["honeydew", inspect(queue_name)] |> Enum.join("_") |> String.to_atom
